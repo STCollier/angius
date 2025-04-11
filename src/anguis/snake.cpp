@@ -6,45 +6,21 @@
 #include "../engine/util.hpp"
 #include "snake.hpp"
 
-Snake::Snake() : m_texture("res/textures/snake.png", NEAREST), speed{32.0f}, segmentSize{1.0f}, dx{0.0f}, dy{0.0f}, pos{0.0f, 0.0f} {
-    for (int i = 5; i >= 0; i--) {
-        positions.push_back(glm::vec2(0.0f, static_cast<float>(i)));
+Snake::Snake() : m_model("res/models/sphere.obj"), m_texture_head("res/textures/snake.png", NEAREST), m_texture_body("res/textures/green.png", NEAREST), speed{32.0f}, segmentSize{0.75f}, dx{0.0f}, dy{0.0f}, position{0.0f, 0.0f} {
+    positions.push_back(glm::vec2(0.f, 0.f));
+    
+    for (int i = 1; i < 16; i++) {
+        positions.push_back(glm::vec2(0.0f, static_cast<float>(i) * segmentSize * 2));
     }
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(util::DEFAULT_CUBE_VERTICIES), util::DEFAULT_CUBE_VERTICIES, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(util::DEFAULT_CUBE_INDICIES), util::DEFAULT_CUBE_INDICIES, GL_STATIC_DRAW);
-
-    // pos
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // tex
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);   
-
-    // norm
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(5 * sizeof(float)));
-    glEnableVertexAttribArray(2);   
-
 }
 
-Snake::~Snake() {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
-}
+bool firstPerson = false;
+bool toggled = false;
 
-void Snake::update(Window& window, float dt) {
-    if (window.keyDown(GLFW_KEY_W)) dy -= 1.0f;
+void Snake::update(Window& window, float dt, Camera& camera) {
+    
+    // Third person movement with WASD
+    /*if (window.keyDown(GLFW_KEY_W)) dy -= 1.0f;
     if (window.keyDown(GLFW_KEY_S)) dy += 1.0f;
     if (window.keyDown(GLFW_KEY_A)) dx -= 1.0f;
     if (window.keyDown(GLFW_KEY_D)) dx += 1.0f;
@@ -55,33 +31,75 @@ void Snake::update(Window& window, float dt) {
         dy /= length;
     }
 
-    pos.x += dx * speed * dt;
-    pos.y += dy * speed * dt;
+    position.x += dx * speed * dt;
+    position.y += dy * speed * dt;*/
 
-    slither(pos.x, pos.y);
+    if (window.keyDown(GLFW_KEY_TAB) && !toggled) {
+        firstPerson = !firstPerson;
+        toggled = true;
+    }
+
+    if (!window.keyDown(GLFW_KEY_TAB) && toggled) toggled = false;
+
+    glm::vec2 direction = glm::normalize(glm::vec2(camera.forward.x, camera.forward.z));
+    position += direction * speed * dt;
+
+    camera.view = glm::mat4(1.0f);
+
+    if (firstPerson) {
+        glm::vec3 camPos = glm::vec3(position.x, 2.0f, position.y);
+        glm::vec3 direction3D = glm::normalize(glm::vec3(direction.x, 0.0f, direction.y));
+        glm::vec3 camTarget = camPos + direction3D;
+        
+        camera.view = glm::lookAt(camPos, camTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+    } else {
+        camera.view = glm::rotate(camera.view, (float) glm::radians(45.0), glm::vec3(1.f, 0.f, 0.f));
+        camera.view = glm::translate(camera.view, glm::vec3(0.0f, -100.0f, -100.0f));
+    }
+
+    if (position.x <= -128.f || position.y <= -128.f || position.x >= 128.f || position.y >= 128.f) {
+        die();
+    }
+
+    slither(position.x, position.y);
 
     if (window.keyDown(GLFW_KEY_SPACE)) {
         grow();
     }
 }
 
-
 void Snake::render(Shader shader) {
-    shader.use();
-
-    glActiveTexture(GL_TEXTURE0);
-    m_texture.bind();
     
-    glBindVertexArray(VAO);
+    glActiveTexture(GL_TEXTURE0);
 
     for (size_t i = 0; i < positions.size(); i++) {
+        !i ? m_texture_head.bind() : m_texture_body.bind();
+    
+        float angle = 0.0f;
+        if (i < positions.size() - 1) {
+            glm::vec2 nextSegment = positions[i + 1];
+            glm::vec2 thisSegment = positions[i];
+    
+            float dx = nextSegment.x - thisSegment.x;
+            float dy = nextSegment.y - thisSegment.y;
+    
+            angle = atan2f(dy, dx);
+        } else if (i > 0) {
+            glm::vec2 thisSegment = positions[i];
+            glm::vec2 prevSegment = positions[i - 1];
+    
+            float dx = thisSegment.x - prevSegment.x;
+            float dy = thisSegment.y - prevSegment.y;
+    
+            angle = atan2f(dy, dx);
+        }
+    
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::scale(model, glm::vec3(1.0f));
-        model = glm::translate(model, glm::vec3(positions[i].x, 2.0f, positions[i].y));
-
-        shader.setMat4("model", model);
-        
-        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+        model = glm::translate(model, glm::vec3(positions[i].x, !i ? 1.9f : 2.f, positions[i].y));
+        model = glm::rotate(model, angle, glm::vec3(0.f, 1.f, 0.f));
+        model = glm::scale(model, glm::vec3(segmentSize*2));
+    
+        m_model.render(shader, model);
     }
 }
 
@@ -134,4 +152,8 @@ void Snake::grow() {
 
     glm::vec2 newSegment = tail + glm::vec2(dx, dy);
     positions.push_back(newSegment);
+}
+
+void Snake::die() {
+    // TODO: die
 }

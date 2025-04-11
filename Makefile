@@ -1,7 +1,7 @@
 CC ?= g++-14
 BIN_DIR = ./bin
 CFLAGS = -I/opt/homebrew/include -Ilib
-LDFLAGS = -L/opt/homebrew/lib/ -lglfw -lm -Wall -Wextra  -g -lc++ -std=c++26 # -O2
+LDFLAGS = -L/opt/homebrew/lib/ -lglfw -lm -Wall -Wextra -lc++ -std=c++26 # -Og -g -fsanitize=address
 
 SRC = src/main.cpp src/engine/*.cpp src/anguis/*.cpp
 

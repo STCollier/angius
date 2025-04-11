@@ -1,7 +1,7 @@
 #include "window.hpp"
 
-void Window::sizeCallback(GLFWwindow *window, [[maybe_unused]] int w, [[maybe_unused]] int h) {
-    Window *handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+void Window::sizeCallback(GLFWwindow* window, [[maybe_unused]] int w, [[maybe_unused]] int h) {
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
 
     handler->width = w;
     handler->height = h;
@@ -14,7 +14,7 @@ void Window::sizeCallback() {
 }
 
 void Window::keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-    Window *handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     handler->keyboardCallback(key, scancode, action, mode);
 }
 
@@ -32,7 +32,7 @@ void Window::keyboardCallback(int key, [[maybe_unused]] int scancode, int action
 }
 
 void Window::mouseCallback(GLFWwindow* window, int button, int action, int mode) {
-    Window *handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+    Window* handler = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
     handler->mouseCallback(button, action, mode);
 }
 
@@ -74,14 +74,14 @@ Window::Window(std::string title, int width, int height) : title{title}, width{w
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
     glEnable(GL_FRAMEBUFFER_SRGB);
-    glCullFace(GL_BACK);
-    glFrontFace(GL_CW);
+    //glCullFace(GL_BACK);
+    //glFrontFace(GL_CW);
 
     glfwSetFramebufferSizeCallback(m_window, sizeCallback);
     glfwSetKeyCallback(m_window, keyboardCallback);
     glfwSetMouseButtonCallback(m_window, mouseCallback);
 
-    glViewport(0, 0, width, height);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 Window::~Window() {

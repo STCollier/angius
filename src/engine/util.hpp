@@ -5,11 +5,7 @@
 
 namespace util {
     std::string slurp(std::ifstream& in);
-
-    template <typename T>
-    int sgn(T val) {
-        return (T(0) < val) - (val < T(0));
-    }
+    size_t strSpaces(std::string str);
 
     // TODO: remove duplicate verticies and recalculte indices
     inline float DEFAULT_CUBE_VERTICIES[] = {

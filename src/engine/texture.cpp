@@ -40,7 +40,7 @@ Texture::Texture(std::string src, FilteringType type) : src{src} {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_SRGB8_ALPHA8, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        throw std::runtime_error(std::format("Failed to load texture {}\n", src));
+        throw std::runtime_error(std::format("Failed to load texture file {}\n", src));
     }
 
     stbi_image_free(data);

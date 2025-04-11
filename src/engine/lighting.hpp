@@ -1,12 +1,13 @@
 #pragma once
 
 #include "shader.hpp"
+#include "camera.hpp"
 
 class Lighting {
     public:
         Lighting();
 
-        void shadowPass(Shader shader);
+        void shadowPass(Shader shader, Camera& camera);
         unsigned int getDepthMapFBO() { return depthMapFBO; }
         unsigned int getDepthMap()    { return depthMap; }
 

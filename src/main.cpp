@@ -30,8 +30,9 @@ int main() {
 
     while (!glfwWindowShouldClose(window.getWindow())) {
         window.update();
+        camera.update(window);
 
-        lighting.shadowPass(depthShader);
+        lighting.shadowPass(depthShader, camera);
 
         glCullFace(GL_FRONT);
         ground.render(depthShader);
@@ -51,7 +52,7 @@ int main() {
         mainShader.setVec3("viewPos", glm::vec3(0.0f, 100.0f, 100.0f));
         mainShader.setVec3("lightPos", lighting.lightPos);
         mainShader.setMat4("lightSpaceMatrix", lighting.lightSpaceMatrix);
-
+    
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, lighting.getDepthMap());
 
@@ -60,7 +61,7 @@ int main() {
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        snake.update(window, window.deltaTime());
+        snake.update(window, window.deltaTime(), camera);
 
         glfwSwapBuffers(window.getWindow());
         glfwPollEvents();

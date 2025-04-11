@@ -2,28 +2,23 @@
 
 #include "../engine/texture.hpp"
 #include "../engine/shader.hpp"
+#include "../engine/camera.hpp"
 #include "../engine/window.hpp"
+#include "../engine/model.hpp"
 
 #include <vector>
-
-enum Direction {
-    FORWARD,
-    BACKWARD,
-    RIGHT,
-    LEFT
-};
 
 class Snake {
     public:
         Snake();
-        ~Snake();
 
         void render(Shader shader);
-        void update(Window& window, float dt);
+        void update(Window& window, float dt, Camera& camera);
 
     private:
-        unsigned int VBO, VAO, EBO;
-        Texture m_texture;
+        Model m_model;
+        Texture m_texture_head;
+        Texture m_texture_body;
 
         std::vector<glm::vec2> positions;
 
@@ -31,10 +26,11 @@ class Snake {
         void join();
         void slither(float x, float y);
         void grow();
+        void die();
 
         float speed;
         float segmentSize;
 
-        float dx, dy;
-        glm::vec2 pos;
+        [[maybe_unused]] float dx, dy;
+        glm::vec2 position; // ultimate position of snake (head)
 };
