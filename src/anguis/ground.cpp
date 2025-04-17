@@ -11,7 +11,8 @@ void Ground::render(Shader shader) {
     m_texture.bind();
 
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::scale(model, glm::vec3(128.0f, 1.f, 128.0f));
+    model = glm::translate(model, glm::vec3(0.f, 0.f, 0.f));
+    model = glm::scale(model, glm::vec3(16.f));
 
     m_model.render(shader, model);
 }

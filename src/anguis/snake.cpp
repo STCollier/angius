@@ -6,7 +6,7 @@
 #include "../engine/util.hpp"
 #include "snake.hpp"
 
-Snake::Snake() : m_model("res/models/sphere.obj"), m_texture_head("res/textures/snake.png", NEAREST), m_texture_body("res/textures/green.png", NEAREST), speed{32.0f}, segmentSize{0.75f}, dx{0.0f}, dy{0.0f}, position{0.0f, 0.0f} {
+Snake::Snake() : m_model("res/models/snake.obj"), m_texture_head("res/textures/snake.hdr", NEAREST), m_texture_body("res/textures/snake_purple.hdr", NEAREST), speed{32.0f}, segmentSize{1.0f}, dx{0.0f}, dy{0.0f}, position{0.0f, 0.0f} {
     positions.push_back(glm::vec2(0.f, 0.f));
     
     for (int i = 1; i < 16; i++) {
@@ -52,6 +52,7 @@ void Snake::update(Window& window, float dt, Camera& camera) {
         glm::vec3 camTarget = camPos + direction3D;
         
         camera.view = glm::lookAt(camPos, camTarget, glm::vec3(0.0f, 1.0f, 0.0f));
+        camera.position = camPos;
     } else {
         camera.view = glm::rotate(camera.view, (float) glm::radians(45.0), glm::vec3(1.f, 0.f, 0.f));
         camera.view = glm::translate(camera.view, glm::vec3(0.0f, -100.0f, -100.0f));

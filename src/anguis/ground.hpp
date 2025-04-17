@@ -6,7 +6,7 @@
 
 class Ground {
     public:
-        Ground() : m_model("res/models/default_cube.obj"), m_texture("res/textures/ground128.png", NEAREST) {};
+        Ground() : m_model("res/models/arena.obj"), m_texture("res/textures/albedo.hdr", LINEAR) {};
 
         void render(Shader shader);
 

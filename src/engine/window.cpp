@@ -72,10 +72,10 @@ Window::Window(std::string title, int width, int height) : title{title}, width{w
     }
 
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_FRAMEBUFFER_SRGB);
-    //glCullFace(GL_BACK);
-    //glFrontFace(GL_CW);
+    glCullFace(GL_BACK);
+    glFrontFace(GL_CCW);
 
     glfwSetFramebufferSizeCallback(m_window, sizeCallback);
     glfwSetKeyCallback(m_window, keyboardCallback);

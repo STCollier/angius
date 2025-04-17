@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 // very specific near and far planes to prevent shadow aliasing
-Camera::Camera(Window& window) : near{0.1f}, far{10000.0f}, pitch{0.0f}, yaw{-90.0f}, FOV{45.0f}, sensitivity{0.1f} {
+Camera::Camera(Window& window) : near{0.01f}, far{8192.0f}, pitch{0.0f}, yaw{-90.0f}, FOV{45.0f}, sensitivity{0.2f} {
     lastX = window.width / 2.0f;
     lastY = window.height / 2.0f;
     
@@ -12,7 +12,8 @@ Camera::Camera(Window& window) : near{0.1f}, far{10000.0f}, pitch{0.0f}, yaw{-90
     projection = glm::mat4(1.0f);
 
     view = glm::rotate(view, (float) glm::radians(45.0), glm::vec3(1.f, 0.f, 0.f));
-    view = glm::translate(view, glm::vec3(0.0f, -100.0f, -100.0f));
+    position = glm::vec3(0.0f, -100.0f, -100.0f);
+    view = glm::translate(view, position);
 
     projection = glm::perspective(glm::radians(FOV), (float) window.width / (float) window.height, near, far);
 }
