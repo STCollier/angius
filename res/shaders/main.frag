@@ -10,6 +10,7 @@ in vec4 FragPosLightSpace;
 
 uniform sampler2D _texture;
 uniform sampler2D shadowMap;
+uniform vec3 pelletColor;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;
@@ -54,11 +55,11 @@ vec4 Posterize(in vec4 frag) {
 
 void main()
 {
-    vec3 lightColor = vec3(1.0, 0.33, 0.33);
+    vec3 lightColor = vec3(1.8, 0.66, 0.66);
 
 	// ambient
-    float ambientStrength = 0.1;
-    vec3 ambient = 0.1 * lightColor;
+    float ambientStrength = 0.2;
+    vec3 ambient = ambientStrength * lightColor;
   	
     // diffuse 
     vec3 norm = normalize(Normal);
@@ -75,7 +76,7 @@ void main()
 
     float shadow = InShadow(FragPosLightSpace);
 
-    vec3 albedo = texture(_texture, TexCoord).rgb;
+    vec3 albedo = texture(_texture, TexCoord).rgb * pelletColor;
 	vec3 result = (ambient + (1.0 - shadow) * (diffuse + specular)) * albedo;
 
     vec2 uv = (gl_FragCoord.xy / resolution);

@@ -5,7 +5,7 @@
 #include "lighting.hpp"
 
 
-Lighting::Lighting(Window& window, Shader& _depthShader, Shader& _blurShader, Shader& _bloomShader) : shadowResolution{8192.f}, blurIterations{16}, depthShader{_depthShader}, blurShader{_blurShader}, bloomShader{_bloomShader} {
+Lighting::Lighting(Window& window, Shader& _depthShader, Shader& _blurShader, Shader& _bloomShader) : shadowResolution{8192.f}, exposure{1.0f}, blurIterations{16}, depthShader{_depthShader}, blurShader{_blurShader}, bloomShader{_bloomShader} {
     glm::ivec2 framebufferSize;
     glfwGetFramebufferSize(window.getWindow(), &framebufferSize.x, &framebufferSize.y);
     
@@ -137,7 +137,6 @@ void Lighting::renderColor() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[!horizontal]);
 
-    //bloomShader.setInt("useBloom", true);
-    bloomShader.setFloat("exposure", 1.2f);
+    bloomShader.setFloat("exposure", exposure);
     util::renderQuad();
 }

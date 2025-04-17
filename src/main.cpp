@@ -13,6 +13,7 @@
 
 #include "anguis/ground.hpp"
 #include "anguis/snake.hpp"
+#include "anguis/food.hpp"
 
 int main() {
     Window window("Window", 1600, 900);
@@ -29,6 +30,7 @@ int main() {
 
     Ground ground{};
     Snake snake{};
+    Food food{};
 
     mainShader.use();
     camera.setMatrices(mainShader);
@@ -39,6 +41,9 @@ int main() {
     bool bloomKeyPressed = false;
 
     while (!glfwWindowShouldClose(window.getWindow())) {
+        float dt = window.deltaTime();
+        float time = window.time();
+
         window.update();
         camera.update(window);
         
@@ -48,6 +53,7 @@ int main() {
         glCullFace(GL_FRONT);
         ground.render(depthShader);
         snake.render(depthShader);
+        food.render(depthShader, snake, time);
         glCullFace(GL_BACK);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -74,6 +80,7 @@ int main() {
 
         ground.render(mainShader);
         snake.render(mainShader);
+        food.render(mainShader, snake, time);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -93,7 +100,7 @@ int main() {
 
         bloomShader.setInt("useBloom", bloom);
 
-        snake.update(window, window.deltaTime(), camera);
+        snake.update(window, dt, camera);
 
         glfwSwapBuffers(window.getWindow());
         glfwPollEvents();

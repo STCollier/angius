@@ -96,7 +96,7 @@ void Snake::render(Shader shader) {
         }
     
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(positions[i].x, !i ? 1.9f : 2.f, positions[i].y));
+        model = glm::translate(model, glm::vec3(positions[i].x, 2.0f, positions[i].y));
         model = glm::rotate(model, angle, glm::vec3(0.f, 1.f, 0.f));
         model = glm::scale(model, glm::vec3(segmentSize*2));
     
@@ -157,4 +157,14 @@ void Snake::grow() {
 
 void Snake::die() {
     // TODO: die
+}
+
+// Based on head position
+bool Snake::collide(glm::vec3 other, float radius) {
+    glm::vec2 head = positions[0];
+
+    glm::vec3 dist = glm::vec3(head.x - other.x, 2.0f - other.y, head.y - other.z);
+    float distance = sqrt((dist.x * dist.x) + (dist.y * dist.y) + (dist.z * dist.z));
+  
+    return (distance <= segmentSize * 2 + radius);
 }

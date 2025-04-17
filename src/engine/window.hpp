@@ -21,6 +21,7 @@ class Window {
 
         void update();
         float deltaTime();
+        float time();
         bool keyDown(int key);
         bool mouseDown(int button);
         

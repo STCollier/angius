@@ -14,6 +14,9 @@ class Snake {
 
         void render(Shader shader);
         void update(Window& window, float dt, Camera& camera);
+        bool collide(glm::vec3 other, float radius);
+        void grow();
+        void die();
 
     private:
         Model m_model;
@@ -25,8 +28,6 @@ class Snake {
         void moveTo(float x, float y);
         void join();
         void slither(float x, float y);
-        void grow();
-        void die();
 
         float speed;
         float segmentSize;

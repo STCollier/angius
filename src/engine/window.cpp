@@ -116,3 +116,7 @@ GLFWwindow* Window::getWindow() {
 float Window::deltaTime() {
     return dt;
 }
+
+float Window::time() {
+    return lastFrame;
+}

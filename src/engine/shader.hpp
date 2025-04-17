@@ -15,12 +15,12 @@ class Shader {
 
 		void use();
 
-		void setInt(const char* name, int value);
-		void setFloat(const char* name, float value);
-		void setVec2(const char* name, glm::vec2 value);
-		void setVec3(const char* name, glm::vec3 value);
-		void setVec4(const char* name, glm::vec4 value);
-		void setMat4(const char* name, glm::mat4 value);
+		void setInt(const std::string& name, int value) const;
+		void setFloat(const std::string& name, float value) const;
+		void setVec2(const std::string& name, glm::vec2 value) const;
+		void setVec3(const std::string& name, glm::vec3 value) const;
+		void setVec4(const std::string& name, glm::vec4 value) const;
+		void setMat4(const std::string& name, glm::mat4 value) const;
 
 	private:
 		void checkCompileErrors(unsigned int shader, enum ShaderType type);

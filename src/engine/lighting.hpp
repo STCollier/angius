@@ -20,6 +20,7 @@ class Lighting {
         unsigned int getColorBuffer() { return colorBuffer; }
 
         float shadowResolution;
+        float exposure;
         int blurIterations;
         glm::mat4 lightSpaceMatrix;
         glm::vec3 lightPos;
